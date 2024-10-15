@@ -1,4 +1,6 @@
-# API with Mongoose and Express
+# Read-Only API with Mongoose and Express
+[![Open in Coder](https://ixdcoder.com/open-in-coder.svg)](https://ixdcoder.com/templates/Node/workspace?name=ReadOnlyAPI&mode=auto&param.git_repo=https://bender.sheridanc.on.ca/system-design/read-only-api&param.code_template=custom)
+
 This NodeJS App uses Express and Mongoose to publish a <b>read-only</b> API endpoint for a MongoDB data collection. It supports a query parameter for searching. 
   
 # Setup
