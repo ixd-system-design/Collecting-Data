@@ -51,6 +51,6 @@ Open the file called `/routes/api.js` and customize it to fit your needs.
 To launch the app, run `npm run start` in the terminal. This is a shortcut for launching node in `watch` mode with environment variables loaded. To see the full startup script, take a look at `package.json`
 
 ## 4.2. Deploying
-When deploying to a server, we need to generate the Prisma Client on the server environment. As an example, on Vercel, you can define the following install script in your deployment settings:
+When deploying to a server, we need to generate the Prisma Client on the server environment. As an example, on Vercel, you can define the following [Install Command](https://vercel.com/changelog/customizing-the-install-command-while-creating-projects) in your deployment settings:
 `npm ci && npx prisma generate` 
-This will install the libraries and generate the Prisma Client each time you push changes. 
+This will install the libraries and generate the Prisma Client each time you push changes. NOTE: As a shortcut you can also use `npm run deploy`, since this is defined in `package.json`.
