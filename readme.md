@@ -21,7 +21,7 @@ When working locally, create a file called `.env` and add the `DATABASE_URL` var
 When deploying your project to a server, set the environment variable using the appropriate settings (See, for example, [Environment Variables on Vercel](https://vercel.com/docs/environment-variables)).  
 
 # 2. Setup Prisma 
-Prisma needs to model how your database is structured in order to communicate effectively. As an optional shortcut, you can run `npm run setup` to run all three sub-steps automatically (NOTE: this `setup` script is defined in `package.json`)
+Prisma needs to model how your database is structured in order to communicate effectively. As an optional shortcut, you can run `npm run setup` to run all sub-steps automatically (the `setup` script is defined in `package.json`). Alternately, or if you have trouble, you can proceed step by step:
 
 ## 2.1. Install libraries
 On the terminal, run `npm install`. This will fetch and install all the dependencies we need, including Prisma and Express. Dependencies will be placed in the `node_modules` folder.
@@ -31,20 +31,24 @@ Prisma uses a *Data Model* or [Schema](https://www.prisma.io/docs/orm/prisma-sch
 ```npx prisma db pull --force```
 Prisma *introspects* the database to create a [Model](https://www.prisma.io/docs/orm/prisma-schema/data-model/models) based on the structure of your data. The schema is written to `/prisma/schema.prisma`. NOTE: this overwrites whatever may be there.
 
-## 2.3. Generate Prisma Client (to communicate effectively)
+## 2.3. Mark Optional Fields  
+Importantly, Prisma will assume that all fields are *required*. This is fine if your data is complete, but if there's any missing data, you will want to mark [optional fields](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#optional-and-mandatory-fields) in your model. It's good to do this upfront to avoid problems later. 
+
+## 2.4. Generate Prisma Client (to communicate effectively)
 Once you have a schema, you can generate a [Prisma Client](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/introduction). Here's the command:
 ```npx prisma generate```
 The generated client is tailored to your data and can be used in our app to query the database. 
 
 # 3. Setup API endpoint
 Open the file called `/routes/api.js` and customize it to fit your needs. 
-- Be sure to change the default collection name from `items` to the name of your own MongoDB collection. This will also match the name of your model in `/prisma/schema.prisma`. 
-- The search endpoint assumes that you have a field called `name`. However, you might like to search using a different field, so in that case you'll want to adjust it. 
+- Be sure to change the default model name from `items` to whichever model you want to work with. Models are defined in `/prisma/schema.prisma`. 
+- The search endpoint assumes that you have a field called `name`. However, your data might not have such a field. In this case you should pick another field name to use in the search endpoint.
+- The endpoints are setup to limit us to the first 10 results. You may like to tweak this to fit your own vision.
 
 # 4. Start the app
 
 ## 4.1. Run locally
-To launch the app, run `npm run start` in the terminal. This is a shortcut for launching node in watch mode with environment variables loaded. To see the full startup script, take a look at `package.json`
+To launch the app, run `npm run start` in the terminal. This is a shortcut for launching node in `watch` mode with environment variables loaded. To see the full startup script, take a look at `package.json`
 
 ## 4.2. Deploying
 When deploying to a server, we need to generate the Prisma Client on the server environment. As an example, on Vercel, you can define the following install script in your deployment settings:
