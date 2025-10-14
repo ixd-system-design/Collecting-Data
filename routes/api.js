@@ -22,7 +22,6 @@ router.get('/data', async (req, res) => {
         const result = await prisma[model].findMany({
             take: 10
         })
-        console.log(result)
         res.send(result)
     } catch (err) {
         console.log(err)
