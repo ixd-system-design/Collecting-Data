@@ -3,7 +3,7 @@ const getData = async () => {
     const response = await fetch('/data')
     if (response.ok) {
         const data = await response.json()
-        document.querySelector('#content').innerHTML = `<div>✅ MongoDB connected. </div>`
+        document.querySelector('#content').innerHTML = `<h3>✅ MongoDB connected. </h3>`
         console.log(data)
         data.forEach(item => {
             let div = document.createElement('div')

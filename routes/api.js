@@ -3,9 +3,8 @@
 import express from 'express'
 const router = express.Router()
 
-// Your MongoDB collection name
 // Set this to match the model name in your Prisma schema
-const collection = 'items'
+const model = 'items'
 
 // Prisma lets NodeJS communicate with MongoDB
 // Let's import and initialize the Prisma client
@@ -13,23 +12,18 @@ const collection = 'items'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-// ----- findRaw() -------
-// Returning Raw records from MongoDB
-// This endpoint does not use any schema. 
-// This is helpful for testing and debugging.
-router.get('/raw', async (req, res) => {
-    const result = await prisma[collection].findRaw({});
-    res.send(result);
-})
 
 // ----- basic findMany() -------
 // This endpoint uses the Prisma schema defined in /prisma/schema.prisma
 // This gives us a cleaner data structure to work with. 
 router.get('/data', async (req, res) => {
     try {
-        // fetch all records from the database with no filter
-        const todos = await prisma[collection].findMany({})
-        res.send(todos)
+        // fetch first 10 records from the database with no filter
+        const result = await prisma[model].findMany({
+            take: 10
+        })
+        console.log(result)
+        res.send(result)
     } catch (err) {
         console.log(err)
         res.status(500).send(err)
@@ -44,19 +38,36 @@ router.get('/search', async (req, res) => {
     try {
         // get search terms from query string, default to empty string
         const searchTerms = req.query.terms || ''
-        // build the query options
-        const queryOptions = {
+        // fetch the records from the database
+        const result = await prisma[model].findMany({
             where: {
                 name: {
                     contains: searchTerms,
                     mode: 'insensitive'  // case-insensitive search
                 }
             },
-            orderBy: { name: 'asc' }
-        }
-        // fetch the records from the database
-        const todos = await prisma[collection].findMany(queryOptions)
-        res.send(todos)
+            orderBy: { name: 'asc' },
+            take: 10
+        })
+        res.send(result)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send(err)
+    }
+})
+
+
+// ----- findRaw() -------
+// Returning Raw records from MongoDB
+// This endpoint does not use any schema. 
+// This is can be useful for testing and debugging.
+router.get('/raw', async (req, res) => {
+    try {
+        // raw queries use native MongoDB query syntax
+        // e.g. "limit" instead of "take"
+        const options = { limit: 10 };
+        const results = await prisma[model].findRaw({ options });
+        res.send(results);
     } catch (err) {
         console.log(err)
         res.status(500).send(err)

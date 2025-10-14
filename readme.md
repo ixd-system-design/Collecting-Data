@@ -1,11 +1,11 @@
 # API Endpoints for Publishing and Searching
-This [NodeJS](https://nodejs.org/en) App uses [Express](https://www.npmjs.com/package/express) and [Prisma](https://www.npmjs.com/package/prisma) to publish a simple read-only API endpoint for a [MongoDB](https://www.mongodb.com/products/platform/atlas-database) data collection. This allows you to easily publish an existing dataset.
+This [NodeJS](https://nodejs.org/en) App uses [Express](https://www.npmjs.com/package/express) and [Prisma](https://www.npmjs.com/package/prisma) to publish a simple read-only API endpoint for a [MongoDB](https://www.mongodb.com/products/platform/atlas-database) data collection. This allows you to publish an existing dataset.
 
-# Context
+## Context
 This demo assumes you already have an existing [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) cluster with at least one data collection. For example, you might use one of the [sample datasets](https://www.mongodb.com/docs/atlas/sample-data/sample-airbnb/) provided by Atlas, or create your own dataset by [importing a CSV](https://www.mongodb.com/docs/compass/import-export/) through [MongoDB Compass](https://www.mongodb.com/docs/compass/). 
 
 # Setup Process
-1. Add your MongoDB connection string as an environment variable
+1. Add an environment variable for your MongoDB connection string
 2. Setup Prisma to communicate with MongoDB
 3. Define your API endpoints
 4. Run the app
@@ -18,21 +18,20 @@ The example below shows what your `.env` may look like. Note that the trailing e
 
 When working locally, create a file called `.env` and add the `DATABASE_URL` variable to it. For an example, see the file called `.env.example`. 
 
-When deploying your project to a server, set the environment variable using the appropriate settings (See, for example, [Environment Variables on Vercel](https://vercel.com/docs/environment-variables)). 
-
+When deploying your project to a server, set the environment variable using the appropriate settings (See, for example, [Environment Variables on Vercel](https://vercel.com/docs/environment-variables)).  
 
 # 2. Setup Prisma 
-Prisma needs to model how your database is structured in order to communicate effectively. 
+Prisma needs to model how your database is structured in order to communicate effectively. As an optional shortcut, you can run `npm run setup` to run all three sub-steps automatically (NOTE: this `setup` script is defined in `package.json`)
 
-## Quickstart
-As an optional shortcut, you can run `npm run setup` to complete steps 2A and 2B automatically.
+## 2.1. Install libraries
+On the terminal, run `npm install`. This will fetch and install all the dependencies we need, including Prisma and Express. Dependencies will be placed in the `node_modules` folder.
 
-## 2A. Make a Schema (model the database structure)
+## 2.2. Make a Schema (model the database structure)
 Prisma uses a *Data Model* or [Schema](https://www.prisma.io/docs/orm/prisma-schema/overview) to understand and query your data collection. To infer a schema for your existing data, run this command:
 ```npx prisma db pull --force```
 Prisma *introspects* the database to create a [Model](https://www.prisma.io/docs/orm/prisma-schema/data-model/models) based on the structure of your data. The schema is written to `/prisma/schema.prisma`. NOTE: this overwrites whatever may be there.
 
-## 2B. Generate Prisma Client (to communicate effectively)
+## 2.3. Generate Prisma Client (to communicate effectively)
 Once you have a schema, you can generate a [Prisma Client](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/introduction). Here's the command:
 ```npx prisma generate```
 The generated client is tailored to your data and can be used in our app to query the database. 
@@ -43,4 +42,11 @@ Open the file called `/routes/api.js` and customize it to fit your needs.
 - The search endpoint assumes that you have a field called `name`. However, you might like to search using a different field, so in that case you'll want to adjust it. 
 
 # 4. Start the app
+
+## 4.1. Run locally
 To launch the app, run `npm run start` in the terminal. This is a shortcut for launching node in watch mode with environment variables loaded. To see the full startup script, take a look at `package.json`
+
+## 4.2. Deploying
+When deploying to a server, we need to generate the Prisma Client on the server environment. As an example, on Vercel, you can define the following install script in your deployment settings:
+`npm ci && npx prisma generate` 
+This will install the libraries and generate the Prisma Client each time you push changes. 
