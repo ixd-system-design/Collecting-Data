@@ -32,7 +32,7 @@ Prisma uses a *Data Model* or [Schema](https://www.prisma.io/docs/orm/prisma-sch
 Prisma *introspects* the database to create a [Model](https://www.prisma.io/docs/orm/prisma-schema/data-model/models) based on the structure of your data. The schema is written to `/prisma/schema.prisma`. NOTE: this overwrites whatever may be there.
 
 ## 2.3. Mark Optional Fields  
-Importantly, Prisma will assume that all fields are *required*. This is fine if your data is complete, but if there's any missing data, you will want to mark [optional fields](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#optional-and-mandatory-fields) in your model. It's good to do this upfront to avoid problems later. 
+Importantly, Prisma will assume that all fields are *required*. This is fine if your data is complete, but if there's any missing data, you will want to mark [optional fields](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#optional-and-mandatory-fields) in your model. It's good to do this upfront to avoid problems later. To explore the structure of your data, you can use the [Schema](https://www.mongodb.com/docs/compass/schema/) tab in MongoDB Compass. You can also query MongoDB to check if data is missing for a given field. For example, looking at the `sample_restaurants` dataset, The following query shows two documents that are missing a GPS location: `{"address.longitude": {"$exists": false}}`. Based on this information we could mark the longitude field as optional in the Prisma schema.
 
 ## 2.4. Generate Prisma Client (to communicate effectively)
 Once you have a schema, you can generate a [Prisma Client](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/introduction). Here's the command:
