@@ -4,7 +4,7 @@
   "description": "API Endpoints for Publishing and Searching",
   "main": "server.js",
   "scripts": {
-    "setup": "npm install && npx prisma db pull --force && npx prisma generate",
+    "setup": "npm install",
     "start": "node --watch --env-file=.env server.js",
     "postinstall": "prisma generate"
   },
