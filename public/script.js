@@ -100,7 +100,7 @@ const createItem = async (myData) => {
         // If all goes well we will recieve back the submitted data
         // along with a new _id field added by MongoDB
         const result = await response.json()
-        alert('Data Sent to MongoDB via API. Details are in the console. To see all persisted data, visit the /items endpoint in another tab.');
+        alert('Data Sent to MongoDB via API. Details are in the console. To see all persisted data, visit the /data endpoint in another tab.');
         // log the result 
         console.log(result)
         // refresh the data list
