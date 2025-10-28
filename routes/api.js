@@ -1,10 +1,10 @@
-// Below we will use the Express Router to define a read only API endpoint
+// Below we will use the Express Router to define a series of API endpoints.
 // Express will listen for API requests and respond accordingly
 import express from 'express'
 const router = express.Router()
 
 // Set this to match the model name in your Prisma schema
-const model = 'items'
+const model = 'cats'
 
 // Prisma lets NodeJS communicate with MongoDB
 // Let's import and initialize the Prisma client
@@ -13,21 +13,36 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 
-// ----- basic findMany() -------
-// This endpoint uses the Prisma schema defined in /prisma/schema.prisma
-// This gives us a cleaner data structure to work with. 
+// ----- CREATE (POST) -----
+// Create a new record for the configured model
+// This is the 'C' of CRUD
+router.post('/data', async (req, res) => {
+    try {
+        const created = await prisma[model].create({
+            data: req.body
+        })
+        res.status(201).send(created)
+    } catch (err) {
+        console.error('POST /data error:', err)
+        res.status(500).send({ error: 'Failed to create record', details: err.message || err })
+    }
+})
+
+
+// ----- READ (GET) list ----- 
 router.get('/data', async (req, res) => {
     try {
-        // fetch first 10 records from the database with no filter
+        // fetch first 100 records from the database with no filter
         const result = await prisma[model].findMany({
-            take: 10
+            take: 100
         })
         res.send(result)
     } catch (err) {
-        console.log(err)
-        res.status(500).send(err)
+        console.error('GET /data error:', err)
+        res.status(500).send({ error: 'Failed to fetch records', details: err.message || err })
     }
 })
+
 
 
 // ----- findMany() with search ------- 
@@ -50,28 +65,12 @@ router.get('/search', async (req, res) => {
         })
         res.send(result)
     } catch (err) {
-        console.log(err)
-        res.status(500).send(err)
+        console.error('GET /search error:', err)
+        res.status(500).send({ error: 'Search failed', details: err.message || err })
     }
 })
 
 
-// ----- findRaw() -------
-// Returning Raw records from MongoDB
-// This endpoint does not use any schema. 
-// This is can be useful for testing and debugging.
-router.get('/raw', async (req, res) => {
-    try {
-        // raw queries use native MongoDB query syntax
-        // e.g. "limit" instead of "take"
-        const options = { limit: 10 };
-        const results = await prisma[model].findRaw({ options });
-        res.send(results);
-    } catch (err) {
-        console.log(err)
-        res.status(500).send(err)
-    }
-})
 
 
 // export the api routes for use elsewhere in our app 
